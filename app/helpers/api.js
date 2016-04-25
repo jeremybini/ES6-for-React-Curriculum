@@ -1,49 +1,48 @@
-var axios = require('axios');
+const axios = require('axios');
 
-var _baseURL = 'http://api.openweathermap.org/data/2.5/';
-var _APIKEY = 'b714ec74bbab5650795063cb0fdf5fbe';
+const _baseURL = 'http://api.openweathermap.org/data/2.5/';
+const _APIKEY = 'b714ec74bbab5650795063cb0fdf5fbe';
 
 function prepRouteParams (queryStringData) {
   return Object.keys(queryStringData)
     .map(function (key) {
-      return key + '=' + encodeURIComponent(queryStringData[key]);
+      return `${key}=${encodeURIComponent(queryStringData[key])}`
     }).join('&')
 }
 
 function prepUrl (type, queryStringData) {
-  return _baseURL + type + '?' + prepRouteParams(queryStringData);
+  return `${_baseURL}${type}?${prepRouteParams(queryStringData)}`
 }
 
 function getQueryStringData (city) {
   return {
-    q: city,
+    q: city.split(',')[0],
     type: 'accurate',
     APPID: _APIKEY,
     cnt: 5
   }
 }
 
-function getCurrentWeather (city) {
-  var queryStringData = getQueryStringData(city);
-  var url = prepUrl('weather', queryStringData)
-
-  return axios.get(url)
-    .then(function (currentWeatherData) {
-      return currentWeatherData.data
-    })
+async function getCurrentWeather (city) {
+  try {
+    const queryStringData = getQueryStringData(city)
+    const url = prepUrl('weather', queryStringData)
+    const currentWeatherData = await axios.get(url)
+    return currentWeatherData.data
+  } catch(err) {
+    console.warn('Error in API helper, getCurrentWeather()', err);
+  }
 }
 
-function getForcast (city) {
-  var queryStringData = getQueryStringData(city);
-  var url = prepUrl('forecast/daily', queryStringData)
-
-  return axios.get(url)
-    .then(function (forecastData) {
-      return forecastData.data
-    })
+async function getForcast (city) {
+  try {
+    const queryStringData = getQueryStringData(city)
+    const url = prepUrl('forecast/daily', queryStringData)
+    const forecastData = await axios.get(url)
+    return forecastData.data
+  } catch(err) {
+    console.warn('Error in API helper, getForcast()', err);
+  }
 }
 
-module.exports = {
-  getCurrentWeather: getCurrentWeather,
-  getForcast: getForcast
-};
+export { getCurrentWeather, getForcast }

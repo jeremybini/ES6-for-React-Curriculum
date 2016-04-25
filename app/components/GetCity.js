@@ -1,5 +1,4 @@
-var React = require('react');
-var PropTypes = React.PropTypes;
+import React, { PropTypes } from 'react'
 
 function Button (props) {
   return (
@@ -12,21 +11,21 @@ function Button (props) {
   )
 }
 
-function InputField (props) {
+function InputField ({ onUpdateCity, city }) {
   return (
     <input
       className='form-control'
-      onChange={props.onUpdateCity}
+      onChange={onUpdateCity}
       placeholder='St. George, Utah'
       type='text'
-      value={props.city} />
+      value={city} />
   )
 }
 
-function getStyles (props) {
+function getStyles (direction) {
   return {
     display: 'flex',
-    flexDirection: props.direction || 'column',
+    flexDirection: direction || 'column',
     justifyContent: 'center',
     alignItems: 'center',
     maxWidth: 300,
@@ -34,14 +33,14 @@ function getStyles (props) {
   }
 }
 
-function GetCity (props) {
+function GetCity ({ direction, city, onUpdateCity, onSubmitCity }) {
   return (
-    <div style={getStyles(props)}>
+    <div style={getStyles(direction)}>
       <InputField
-        onUpdateCity={props.onUpdateCity}
-        city={props.city} />
+        onUpdateCity={onUpdateCity}
+        city={city} />
       <Button
-        onSubmitCity={props.onSubmitCity}>
+        onSubmitCity={onSubmitCity}>
           Get Weather
       </Button>
     </div>
@@ -55,4 +54,4 @@ GetCity.propTypes = {
   city: PropTypes.string.isRequired
 }
 
-module.exports = GetCity;
+export default GetCity
